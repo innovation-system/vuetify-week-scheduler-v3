@@ -5,17 +5,17 @@
         <tr>
           <td v-for="day in daysPeriods" :key="'day-' + day.day">
             <div
+              ref="day"
               class="vws-day"
               @touchstart="onDayDown(day.day, $event)"
               @mousedown="onDayDown(day.day, $event)"
-              ref="day"
             >
               <scheduler-period
                 v-for="(p, i) in day.periods"
                 :key="i"
                 :period="p"
                 :settings="settings"
-                :blockHeight="blockHeight"
+                :block-height="blockHeight"
                 :editable="editable"
                 @period-drag="onPeriodDown($event, day.day, p.index)"
                 @period-resize="onPeriodResize($event, day.day, p.index)"
@@ -44,7 +44,7 @@
     </table>
     <div class="vws-grid">
       <div class="vws-grid-head">
-        <div v-for="n in settings.days" class="vws-grid-day" :key="n">
+        <div v-for="n in settings.days" :key="n" class="vws-grid-day">
           <v-hover v-slot="{ hover }">
             <div>
               <strong>
@@ -57,35 +57,35 @@
               <v-btn
                 v-show="editable && hover"
                 icon
-                x-small
-                @click="clearDayPeriods(n - 1)"
+                size="x-small"
                 :title="settings.periodRemoveButton"
+                @click="clearDayPeriods(n - 1)"
               >
-                <v-icon x-small>mdi-close</v-icon>
+                <v-icon size="x-small">mdi-close</v-icon>
               </v-btn>
               <v-btn
                 v-show="editable && hover"
                 icon
-                x-small
-                @click="cloneDayPeriods(n - 1)"
+                size="x-small"
                 :title="settings.periodDuplicateButton"
+                @click="cloneDayPeriods(n - 1)"
               >
-                <v-icon x-small>mdi-content-copy</v-icon>
+                <v-icon size="x-small">mdi-content-copy</v-icon>
               </v-btn>
               <v-btn
                 v-show="editable && hover"
                 icon
-                x-small
-                @click="selectWholeDay(n - 1)"
+                size="x-small"
                 :title="settings.periodSelectWholeButton"
+                @click="selectWholeDay(n - 1)"
               >
-                <v-icon x-small>mdi-select-all</v-icon>
+                <v-icon size="x-small">mdi-select-all</v-icon>
               </v-btn>
             </div>
           </v-hover>
         </div>
       </div>
-      <div v-for="n in 25" class="vws-grid-line" :key="n">
+      <div v-for="n in 25" :key="n" class="vws-grid-line">
         <div class="vws-grid-hour">{{ formatHour(n - 1) }}</div>
       </div>
     </div>
@@ -98,26 +98,26 @@
       offset-y
       :close-on-content-click="false"
     >
-      <v-list dense>
+      <v-list density="compact">
         <v-list-item>
           <v-text-field
+            v-model="editEvent.title"
             label="Title"
             required
-            v-model="editEvent.title"
             :type="settings.inputType"
           ></v-text-field>
         </v-list-item>
         <v-list-item class="d-flex" style="max-width: 300px">
           <v-btn
-            icon
             v-for="c in settings.colors"
             :key="c"
+            icon
             :elevation="editEvent.backgroundColor === c ? 10 : 0"
           >
             <v-icon
               :color="c"
-              @click="editEvent.backgroundColor = c"
               size="35px"
+              @click="editEvent.backgroundColor = c"
               >mdi-circle</v-icon
             >
           </v-btn>
@@ -131,7 +131,7 @@
 import SchedulerPeriod from "./vuetify-week-scheduler-period.vue";
 
 export default {
-  name: "vuetify-week-scheduler", // vue component name
+  name: "VuetifyWeekScheduler", // vue component name
   components: {
     SchedulerPeriod,
   },
@@ -156,16 +156,6 @@ export default {
       y: 0,
       editEvent: null,
     };
-  },
-  mounted() {
-    this.settings = { ...this.getDefaults(), ...this.config };
-    this.init();
-    this.handleEvents();
-  },
-  beforeDestroy() {
-    this.events.forEach((e) => {
-      e.element.removeEventListener(e.event, e.callback);
-    });
   },
   computed: {
     data: {
@@ -219,6 +209,16 @@ export default {
     isMobile() {
       return this.$vuetify.breakpoint.mdAndDown;
     },
+  },
+  mounted() {
+    this.settings = { ...this.getDefaults(), ...this.config };
+    this.init();
+    this.handleEvents();
+  },
+  beforeUnmount() {
+    this.events.forEach((e) => {
+      e.element.removeEventListener(e.event, e.callback);
+    });
   },
   methods: {
     getDefaults() {
@@ -444,7 +444,7 @@ export default {
           d?.periods.forEach((period, i) => {
             if (!this.isValid(period, d.periods)) {
               d.periods.splice(i, 1);
-              // eslint-disable-next-line no-console
+               
               console.error("Invalid period duration", period);
             }
           });

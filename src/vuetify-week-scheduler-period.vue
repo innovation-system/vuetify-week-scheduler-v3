@@ -2,10 +2,6 @@
   <v-hover v-slot="{ hover }">
     <div
       class="vws-period"
-      @mousedown.stop="$emit('period-drag', $event)"
-      @touchstart.stop="$emit('period-drag', $event)"
-      @contextmenu.stop.prevent="$emit('edit', $event)"
-      @dblclick.stop.prevent="$emit('edit', $event)"
       :style="{
         backgroundColor: options.backgroundColor,
         outlineColor: options.borderColor,
@@ -14,11 +10,15 @@
         top: period.top + 'px',
         height: period.height + 'px',
       }"
+      @mousedown.stop="$emit('period-drag', $event)"
+      @touchstart.stop="$emit('period-drag', $event)"
+      @contextmenu.stop.prevent="$emit('edit', $event)"
+      @dblclick.stop.prevent="$emit('edit', $event)"
     >
       <div class="vws-period-container">
         <v-icon
-          small
           v-show="editable && hover"
+          size="small"
           class="vws-handle"
           @mousedown.stop="$emit('period-resize', { $event, isUp: true, $el })"
           @touchstart.stop="$emit('period-resize', { $event, isUp: true, $el })"
@@ -27,7 +27,7 @@
         </v-icon>
         <div class="vws-period-time">
           {{ options.start }} - {{ options.end }}
-          <span class="text--caption ml-2" v-show="shortPeriod">{{
+          <span v-show="shortPeriod" class="text--caption ml-2">{{
             options.title
           }}</span>
         </div>
@@ -35,40 +35,40 @@
           {{ options.title }}
         </div>
         <div
-          class="vws-period-buttons"
           v-show="editable && hover"
+          class="vws-period-buttons"
           justify="end"
         >
           <v-btn
             icon
-            x-small
+            size="x-small"
+            :title="settings.periodRemoveButton"
             @click.stop="$emit('delete')"
             @mousedown.stop
             @touchstart.stop
-            :title="settings.periodRemoveButton"
           >
-            <v-icon x-small>mdi-close</v-icon>
+            <v-icon size="x-small">mdi-close</v-icon>
           </v-btn>
           <v-btn
             icon
-            x-small
+            size="x-small"
+            :title="settings.periodDuplicateButton"
             @click.stop="$emit('clone')"
             @mousedown.stop
             @touchstart.stop
-            :title="settings.periodDuplicateButton"
           >
-            <v-icon x-small>mdi-content-copy</v-icon>
+            <v-icon size="x-small">mdi-content-copy</v-icon>
           </v-btn>
         </div>
         <v-icon
-          small
+          v-show="editable && hover"
+          size="small"
           class="vws-handle"
+          style="bottom: 0"
           @mousedown.stop="$emit('period-resize', { $event, isUp: false, $el })"
           @touchstart.stop="
             $emit('period-resize', { $event, isUp: false, $el })
           "
-          v-show="editable && hover"
-          style="bottom: 0"
         >
           mdi-chevron-down
         </v-icon>
@@ -79,7 +79,7 @@
 
 <script>
 export default {
-  name: "vuetify-week-scheduler-period",
+  name: "VuetifyWeekSchedulerPeriod",
   props: {
     period: Object,
     settings: Object,
