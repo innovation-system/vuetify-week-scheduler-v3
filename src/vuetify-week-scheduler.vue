@@ -377,13 +377,13 @@ export default {
         const { $event: e, isUp, $el } = event
 
         this.resizingPeriod = {
-          el: $el,
+          el: $el.nextSibling,
           day,
           index,
           isUp,
           startDrag: this.getY(e, false),
-          startTop: $el.offsetTop,
-          startHeight: $el.clientHeight,
+          startTop: $el.nextSibling.offsetTop,
+          startHeight: $el.nextSibling.clientHeight,
         }
       }
     },
