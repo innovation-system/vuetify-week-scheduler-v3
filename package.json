@@ -1,8 +1,19 @@
 {
   "name": "vuetify-week-scheduler-next",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/vuetify-week-scheduler-next.umd.cjs",
+  "module": "./dist/vuetify-week-scheduler-next.js",
+  "exports": {
+    ".": {
+      "import": "./dist/vuetify-week-scheduler-next.js",
+      "require": "./dist/vuetify-week-scheduler-next.umd.cjs"
+    }
+  },
   "version": "0.0.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

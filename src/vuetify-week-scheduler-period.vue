@@ -1,5 +1,5 @@
 <template>
-  <v-hover v-slot="{ hover }">
+  <v-hover v-slot="{ isHovering }">
     <div
       class="vws-period"
       :style="{
@@ -17,7 +17,7 @@
     >
       <div class="vws-period-container">
         <v-icon
-          v-show="editable && hover"
+          v-show="editable && isHovering"
           size="small"
           class="vws-handle"
           @mousedown.stop="$emit('period-resize', { $event, isUp: true, $el })"
@@ -27,18 +27,12 @@
         </v-icon>
         <div class="vws-period-time">
           {{ options.start }} - {{ options.end }}
-          <span v-show="shortPeriod" class="text--caption ml-2">{{
-            options.title
-          }}</span>
+          <span v-show="shortPeriod" class="text--caption ml-2">{{ options.title }}</span>
         </div>
         <div v-show="!shortPeriod" class="vws-period-title text-truncate">
           {{ options.title }}
         </div>
-        <div
-          v-show="editable && hover"
-          class="vws-period-buttons"
-          justify="end"
-        >
+        <div v-show="editable && isHovering" class="vws-period-buttons" justify="end">
           <v-btn
             icon
             size="x-small"
@@ -61,14 +55,12 @@
           </v-btn>
         </div>
         <v-icon
-          v-show="editable && hover"
+          v-show="editable && isHovering"
           size="small"
           class="vws-handle"
           style="bottom: 0"
           @mousedown.stop="$emit('period-resize', { $event, isUp: false, $el })"
-          @touchstart.stop="
-            $emit('period-resize', { $event, isUp: false, $el })
-          "
+          @touchstart.stop="$emit('period-resize', { $event, isUp: false, $el })"
         >
           mdi-chevron-down
         </v-icon>
@@ -79,20 +71,26 @@
 
 <script>
 export default {
-  name: "VuetifyWeekSchedulerPeriod",
+  name: 'VuetifyWeekSchedulerPeriod',
   props: {
-    period: Object,
-    settings: Object,
-    blockHeight: Number,
+    period: {
+      type: Object,
+      default: () => ({}),
+    },
+    settings: {
+      type: Object,
+      default: () => ({}),
+    },
     editable: { type: Boolean, default: false },
   },
+  emits: ['edit', 'delete', 'clone', 'period-drag', 'period-resize'],
   computed: {
     options() {
-      return this.period.options;
+      return this.period.options
     },
     shortPeriod() {
-      return this.period.height <= 30;
+      return this.period.height <= 30
     },
   },
-};
+}
 </script>

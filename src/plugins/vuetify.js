@@ -1,15 +1,11 @@
 import '@mdi/font/css/materialdesignicons.css' // Ensure you are using css-loader
 import { createVuetify } from 'vuetify'
-import { VBtn, VHover, VIcon, VList, VListItem, VMenu, VTextField } from 'vuetify/lib/components'
+import * as components from 'vuetify/components' // TODO: import only used components?
+import * as directives from 'vuetify/directives' // TODO: import only used directives? unable to resolve this paths
 
 export default createVuetify({
   components: {
-    VBtn,
-    VHover,
-    VIcon,
-    VMenu,
-    VList,
-    VListItem,
-    VTextField,
+    ...components,
   },
+  directives,
 })

@@ -15,7 +15,6 @@
                 :key="i"
                 :period="p"
                 :settings="settings"
-                :block-height="blockHeight"
                 :editable="editable"
                 @period-drag="onPeriodDown($event, day.day, p.index)"
                 @period-resize="onPeriodResize($event, day.day, p.index)"
@@ -45,17 +44,13 @@
     <div class="vws-grid">
       <div class="vws-grid-head">
         <div v-for="n in settings.days" :key="n" class="vws-grid-day">
-          <v-hover v-slot="{ hover }">
+          <v-hover v-slot="{ isHovering }">
             <div>
               <strong>
-                {{
-                  !isMobile
-                    ? settings.daysList[n - 1]
-                    : settings.daysList[n - 1].slice(0, 3)
-                }}
+                {{ !isMobile ? settings.daysList[n - 1] : settings.daysList[n - 1].slice(0, 3) }}
               </strong>
               <v-btn
-                v-show="editable && hover"
+                v-show="editable && isHovering"
                 icon
                 size="x-small"
                 :title="settings.periodRemoveButton"
@@ -64,7 +59,7 @@
                 <v-icon size="x-small">mdi-close</v-icon>
               </v-btn>
               <v-btn
-                v-show="editable && hover"
+                v-show="editable && isHovering"
                 icon
                 size="x-small"
                 :title="settings.periodDuplicateButton"
@@ -73,7 +68,7 @@
                 <v-icon size="x-small">mdi-content-copy</v-icon>
               </v-btn>
               <v-btn
-                v-show="editable && hover"
+                v-show="editable && isHovering"
                 icon
                 size="x-small"
                 :title="settings.periodSelectWholeButton"
@@ -92,10 +87,7 @@
     <v-menu
       v-if="showEditMenu"
       v-model="showEditMenu"
-      :position-x="x"
-      :position-y="y"
-      absolute
-      offset-y
+      :target="[x, y]"
       :close-on-content-click="false"
     >
       <v-list density="compact">
@@ -114,10 +106,7 @@
             icon
             :elevation="editEvent.backgroundColor === c ? 10 : 0"
           >
-            <v-icon
-              :color="c"
-              size="35px"
-              @click="editEvent.backgroundColor = c"
+            <v-icon :color="c" size="35px" @click="editEvent.backgroundColor = c"
               >mdi-circle</v-icon
             >
           </v-btn>
@@ -128,18 +117,19 @@
 </template>
 
 <script>
-import SchedulerPeriod from "./vuetify-week-scheduler-period.vue";
+import SchedulerPeriod from '@/vuetify-week-scheduler-period.vue'
 
 export default {
-  name: "VuetifyWeekScheduler", // vue component name
+  name: 'VuetifyWeekScheduler', // vue component name
   components: {
     SchedulerPeriod,
   },
   props: {
     config: { type: Object, default: () => {} },
-    value: { type: Array, required: true },
+    modelValue: { type: Array, required: true },
     editable: { type: Boolean, default: false },
   },
+  emits: ['update:modelValue', 'error', 'edit'],
   data() {
     return {
       settings: {},
@@ -155,70 +145,70 @@ export default {
       x: 0,
       y: 0,
       editEvent: null,
-    };
+    }
   },
   computed: {
     data: {
       get() {
-        let toReturn = this.value;
+        let toReturn = this.value
         // validate data object
         if (this.value.length !== this.settings.days) {
-          toReturn = [];
+          toReturn = []
           for (let i = 0; i < this.settings.days; i++) {
             toReturn.push({
               day: i,
               periods: [],
-            });
+            })
           }
-          this.$emit("input", toReturn);
+          this.$emit('update:modelValue', toReturn)
         }
-        return toReturn;
+        return toReturn
       },
       set(value) {
-        this.$emit("input", value);
+        this.$emit('update:modelValue', value)
       },
     },
     daysPeriods() {
-      const toReturn = [];
+      const toReturn = []
       for (let d = 0; d < this.settings.days; d++) {
         const toPush = {
           day: d,
           periods: [],
-        };
-        toReturn.push(toPush);
+        }
+        toReturn.push(toPush)
 
-        const day = this.data?.[d];
+        const day = this.data?.[d]
 
         if (day) {
           for (let i = 0; i < day.periods.length; i++) {
-            const period = day.periods[i];
-            const start = this.positionFormat(period.start);
-            const end = this.positionFormat(period.end);
+            const period = day.periods[i]
+            const start = this.positionFormat(period.start)
+            const end = this.positionFormat(period.end)
             toPush.periods.push({
               options: this.addDefaults(period),
               index: i,
               top: start * this.blockHeight,
               height: (end - start) * this.blockHeight,
-            });
+            })
           }
         }
       }
 
-      return toReturn;
+      return toReturn
     },
     isMobile() {
-      return this.$vuetify.breakpoint.mdAndDown;
+      return this.$vuetify.breakpoint.mdAndDown
     },
   },
   mounted() {
-    this.settings = { ...this.getDefaults(), ...this.config };
-    this.init();
-    this.handleEvents();
+    this.settings = { ...this.getDefaults(), ...this.config }
+    this.init()
+    this.handleEvents()
   },
   beforeUnmount() {
     this.events.forEach((e) => {
-      e.element.removeEventListener(e.event, e.callback);
-    });
+      e.element.removeEventListener(e.event, e.callback)
+    })
   },
   methods: {
     getDefaults() {
@@ -226,47 +216,31 @@ export default {
         hour: 24, // 12
         days: 7, // 7/5
         periodDuration: 15, // 15/30/60
-        periodTitle: "",
-        periodBackgroundColor: "#F44336FF",
-        periodBorderColor: "transparent",
-        periodTextColor: "#000",
-        periodRemoveButton: "Remove",
-        periodDuplicateButton: "Duplicate",
-        periodSelectWholeButton: "Select whole day",
-        inputType: "text",
-        daysList: [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-          "Sunday",
-        ],
-        colors: [
-          "#F44336",
-          "#FF9800",
-          "#FFEB3B",
-          "#8BC34A",
-          "#4CAF50",
-          "#00BCD4",
-          "#2196F3",
-        ],
-      };
+        periodTitle: '',
+        periodBackgroundColor: '#F44336FF',
+        periodBorderColor: 'transparent',
+        periodTextColor: '#000',
+        periodRemoveButton: 'Remove',
+        periodDuplicateButton: 'Duplicate',
+        periodSelectWholeButton: 'Select whole day',
+        inputType: 'text',
+        daysList: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        colors: ['#F44336', '#FF9800', '#FFEB3B', '#8BC34A', '#4CAF50', '#00BCD4', '#2196F3'],
+      }
     },
     /** When clicking on a day */
     onDayDown(day, e) {
-      if (!this.editable) return;
+      if (!this.editable) return
 
-      const rect = e.currentTarget.getBoundingClientRect();
-      const offset = this.getY(e, true) - rect.top;
+      const rect = e.currentTarget.getBoundingClientRect()
+      const offset = this.getY(e, true) - rect.top
 
-      const blocks = Math.floor(offset / this.blockHeight);
+      const blocks = Math.floor(offset / this.blockHeight)
 
-      const start = this.blocksToTime(blocks);
-      const end = this.blocksToTime(blocks + 2);
+      const start = this.blocksToTime(blocks)
+      const end = this.blocksToTime(blocks + 2)
 
-      const height = 2 * this.blockHeight;
+      const height = 2 * this.blockHeight
 
       // show the ghost period
       this.newPeriod = {
@@ -278,7 +252,7 @@ export default {
         end,
         top: blocks * this.blockHeight,
         height,
-      };
+      }
     },
     /** Add defaults to period  */
     addDefaults(period) {
@@ -288,7 +262,7 @@ export default {
         borderColor: this.settings.periodBorderColor,
         textColor: this.settings.periodTextColor,
         ...period,
-      };
+      }
     },
     handleEvents() {
       const onUp = () => {
@@ -296,111 +270,102 @@ export default {
           this.addPeriod(this.newPeriod.day, {
             start: this.newPeriod.start,
             end: this.newPeriod.end,
-          });
-          this.newPeriod = null;
+          })
+          this.newPeriod = null
         } else if (this.draggingPeriod) {
-          const { el, day, index } = this.draggingPeriod;
-          const top = el.offsetTop;
-          const height = el.clientHeight;
-          this.onPositionChange(day, index, { top, height });
-          this.draggingPeriod = null;
+          const { el, day, index } = this.draggingPeriod
+          const top = el.offsetTop
+          const height = el.clientHeight
+          this.onPositionChange(day, index, { top, height })
+          this.draggingPeriod = null
         } else if (this.resizingPeriod) {
-          const { el, day, index } = this.resizingPeriod;
-          const top = el.offsetTop;
-          const height = el.clientHeight;
-          this.onPositionChange(day, index, { top, height });
-          this.resizingPeriod = null;
+          const { el, day, index } = this.resizingPeriod
+          const top = el.offsetTop
+          const height = el.clientHeight
+          this.onPositionChange(day, index, { top, height })
+          this.resizingPeriod = null
         }
-      };
+      }
 
       const onMove = (e) => {
         if (this.newPeriod) {
-          e.preventDefault();
+          e.preventDefault()
 
-          const dragDelta = this.roundBlock(
-            this.newPeriod.dragStart - this.getY(e, true)
-          );
-          const height = this.roundBlock(
-            this.newPeriod.startHeight - dragDelta
-          );
+          const dragDelta = this.roundBlock(this.newPeriod.dragStart - this.getY(e, true))
+          const height = this.roundBlock(this.newPeriod.startHeight - dragDelta)
 
           if (
             height > this.blockHeight &&
             this.newPeriod.top + height <= this.newPeriod.maxHeight
           ) {
-            const { start, end } = this.positionToInterval(this.newPeriod);
-            const { periods } = this.data[this.newPeriod.day];
+            const { start, end } = this.positionToInterval(this.newPeriod)
+            const { periods } = this.data[this.newPeriod.day]
             if (this.isValid({ start, end }, periods)) {
-              Object.assign(this.newPeriod, { height, start, end });
+              Object.assign(this.newPeriod, { height, start, end })
             }
           }
         } else if (this.draggingPeriod) {
-          e.preventDefault();
-          const { startDrag, startTop, el, day, index } = this.draggingPeriod;
-          const dragDelta = startDrag - this.getY(e, true);
-          const top = this.roundBlock(startTop - dragDelta);
-          const height = el.clientHeight;
-          const maxHeight = el.parentElement.clientHeight;
+          e.preventDefault()
+          const { startDrag, startTop, el, day, index } = this.draggingPeriod
+          const dragDelta = startDrag - this.getY(e, true)
+          const top = this.roundBlock(startTop - dragDelta)
+          const height = el.clientHeight
+          const maxHeight = el.parentElement.clientHeight
 
           if (top + height <= maxHeight && top >= 0) {
-            el.style.top = `${top}px`;
+            el.style.top = `${top}px`
             this.onPositionChange(day, index, {
               top,
               height,
-            });
+            })
           }
         } else if (this.resizingPeriod) {
-          e.preventDefault();
-          const { startDrag, startTop, startHeight, el, day, index, isUp } =
-            this.resizingPeriod;
+          e.preventDefault()
+          const { startDrag, startTop, startHeight, el, day, index, isUp } = this.resizingPeriod
 
-          const dragDelta = this.roundBlock(startDrag - this.getY(e, true));
-          const top = isUp
-            ? this.roundBlock(startTop - dragDelta)
-            : el.offsetTop;
-          let height = this.roundBlock(
-            startHeight + (isUp ? dragDelta : -dragDelta)
-          );
+          const dragDelta = this.roundBlock(startDrag - this.getY(e, true))
+          const top = isUp ? this.roundBlock(startTop - dragDelta) : el.offsetTop
+          let height = this.roundBlock(startHeight + (isUp ? dragDelta : -dragDelta))
 
-          const maxHeight = document.querySelector(".vws-day").clientHeight;
+          const maxHeight = document.querySelector('.vws-day').clientHeight
 
-          height = Math.max(height, this.blockHeight);
+          height = Math.max(height, this.blockHeight)
 
           if (top + height <= maxHeight && top >= 0) {
-            el.style.height = `${height}px`;
+            el.style.height = `${height}px`
 
             if (isUp) {
-              el.style.top = `${top}px`;
+              el.style.top = `${top}px`
             }
             this.onPositionChange(day, index, {
               top,
               height,
-            });
+            })
           }
         }
-      };
+      }
 
-      this.addListener(document, "mouseup", onUp);
-      this.addListener(document, "touchend", onUp);
+      this.addListener(document, 'mouseup', onUp)
+      this.addListener(document, 'touchend', onUp)
 
-      this.addListener(document, "mousemove", onMove);
-      this.addListener(document, "touchmove", onMove);
+      this.addListener(document, 'mousemove', onMove)
+      this.addListener(document, 'touchmove', onMove)
     },
     onPeriodDown(e, day, index) {
       if (this.editable) {
-        const el = e.currentTarget;
+        const el = e.currentTarget
         this.draggingPeriod = {
           el,
           day,
           index,
           startDrag: this.getY(e, false),
           startTop: el.offsetTop,
-        };
+        }
       }
     },
     onPeriodResize(event, day, index) {
       if (this.editable) {
-        const { $event: e, isUp, $el } = event;
+        const { $event: e, isUp, $el } = event
 
         this.resizingPeriod = {
           el: $el,
@@ -410,7 +375,7 @@ export default {
           startDrag: this.getY(e, false),
           startTop: $el.offsetTop,
           startHeight: $el.clientHeight,
-        };
+        }
       }
     },
     addPeriod(day, period) {
@@ -418,99 +383,95 @@ export default {
         this.data[day] = {
           day,
           periods: [],
-        };
+        }
       }
-      const { periods } = this.data[day];
+      const { periods } = this.data[day]
 
-      period = this.addDefaults(period);
+      period = this.addDefaults(period)
 
       if (this.isValid(period, periods)) {
-        periods.push(period);
+        periods.push(period)
       }
     },
     init() {
       try {
         // duration validation
         if (![15, 30, 60].includes(this.settings.periodDuration)) {
-          throw new Error("Invalide period duration");
+          throw new Error('Invalide period duration')
         }
 
-        this.blocksEachHour = 60 / this.settings.periodDuration; // How many blocks there are in an hour
-        this.maxBlocks = 24 * this.blocksEachHour; // Period height in blocks
-        this.blockHeight = 40 / this.blocksEachHour; // Pixel height of each block
+        this.blocksEachHour = 60 / this.settings.periodDuration // How many blocks there are in an hour
+        this.maxBlocks = 24 * this.blocksEachHour // Period height in blocks
+        this.blockHeight = 40 / this.blocksEachHour // Pixel height of each block
 
         // periods validation
         this.data.forEach((d) => {
           d?.periods.forEach((period, i) => {
             if (!this.isValid(period, d.periods)) {
-              d.periods.splice(i, 1);
-               
-              console.error("Invalid period duration", period);
+              d.periods.splice(i, 1)
+
+              console.error('Invalid period duration', period)
             }
-          });
-        });
+          })
+        })
       } catch (error) {
-        this.$emit("error", error);
+        this.$emit('error', error)
       }
     },
     deletePeriod(day, index) {
-      this.data[day].periods.splice(index, 1);
+      this.data[day].periods.splice(index, 1)
     },
     clonePeriod(day, indexOrPeriod) {
       const period =
-        typeof indexOrPeriod === "object"
-          ? indexOrPeriod
-          : this.data[day].periods[indexOrPeriod];
+        typeof indexOrPeriod === 'object' ? indexOrPeriod : this.data[day].periods[indexOrPeriod]
       for (const d of this.data) {
         if (d.day !== day && this.isValid(period, d.periods)) {
-          d.periods.push({ ...period });
+          d.periods.push({ ...period })
         }
       }
     },
     clearDayPeriods(day) {
       if (this.data[day]) {
-        this.data[day].periods = [];
+        this.data[day].periods = []
       }
     },
     cloneDayPeriods(day) {
       if (this.data[day]) {
-        const { periods } = this.data[day];
+        const { periods } = this.data[day]
         for (const d of this.data) {
           if (d.day !== day) {
             for (const p of periods) {
-              this.clonePeriod(day, p);
+              this.clonePeriod(day, p)
             }
           }
         }
       }
     },
     async onPositionChange(day, periodIndex, pos) {
-      day = this.data?.[day];
-      const period = day?.periods[periodIndex];
+      day = this.data?.[day]
+      const period = day?.periods[periodIndex]
 
       if (period) {
-        const { start, end } = this.positionToInterval(pos);
-        const oldStart = period.start;
-        const oldEnd = period.end;
-        Object.assign(period, { start, end });
-        await this.$nextTick();
+        const { start, end } = this.positionToInterval(pos)
+        const oldStart = period.start
+        const oldEnd = period.end
+        Object.assign(period, { start, end })
+        await this.$nextTick()
         if (!this.isValid(period, day.periods)) {
-          Object.assign(period, { start: oldStart, end: oldEnd });
+          Object.assign(period, { start: oldStart, end: oldEnd })
         }
       }
     },
     /** Round val to nearest multiple of blockHeight */
     roundBlock(val) {
-      return Math.round(val / this.blockHeight) * this.blockHeight;
+      return Math.round(val / this.blockHeight) * this.blockHeight
     },
     /** Returns start/end hours string (hh:mm) from period top/height in pixel */
     positionToInterval(pos) {
       return {
         start: this.blocksToTime(pos.top / this.blockHeight),
-        end: this.blocksToTime(
-          Math.floor((pos.top + pos.height) / this.blockHeight)
-        ),
-      };
+        end: this.blocksToTime(Math.floor((pos.top + pos.height) / this.blockHeight)),
+      }
     },
     /**
      * Return a readable hour from a block position
@@ -519,53 +480,53 @@ export default {
      */
     blocksToTime(nBlocks) {
       if (nBlocks > this.maxBlocks) {
-        nBlocks = 0;
+        nBlocks = 0
       }
 
       if (nBlocks < 0) {
-        nBlocks = 0;
+        nBlocks = 0
       }
 
-      let hour = Math.floor(nBlocks / this.blocksEachHour);
+      let hour = Math.floor(nBlocks / this.blocksEachHour)
 
-      let mn = (nBlocks / this.blocksEachHour - hour) * 60;
+      let mn = (nBlocks / this.blocksEachHour - hour) * 60
 
       if (this.settings.hour === 12) {
-        let time = hour;
-        let ind = "";
+        let time = hour
+        let ind = ''
 
         if (hour >= 12) {
-          ind = "p";
+          ind = 'p'
         }
         if (hour > 12) {
-          time = hour - 12;
+          time = hour - 12
         }
         if (hour === 0 || hour === 24) {
-          ind = "";
-          time = 12;
+          ind = ''
+          time = 12
         }
         if (mn !== 0) {
-          time += `:${mn}`;
+          time += `:${mn}`
         }
 
-        return time + ind;
+        return time + ind
       }
 
       if (hour < 10) {
-        hour = `0${hour}`;
+        hour = `0${hour}`
       }
 
       if (mn < 10) {
-        mn = `0${mn}`;
+        mn = `0${mn}`
       }
 
       // back compatibility when period ends on 23:59
       if (hour === 23 && mn === 59) {
-        hour = "24";
-        mn = "00";
+        hour = '24'
+        mn = '00'
       }
 
-      return `${hour}:${mn}`;
+      return `${hour}:${mn}`
     },
     /** Hour to string */
     formatHour(hour) {
@@ -573,30 +534,30 @@ export default {
         switch (hour) {
           case 0:
           case 24:
-            hour = "12am";
-            break;
+            hour = '12am'
+            break
           case 12:
-            hour = "12pm";
-            break;
+            hour = '12pm'
+            break
           default:
             if (hour > 12) {
-              hour = `${hour - 12}pm`;
+              hour = `${hour - 12}pm`
             } else {
-              hour += "am";
+              hour += 'am'
             }
         }
       } else {
         if (hour > 24) {
-          hour = 0;
+          hour = 0
         }
 
         if (hour < 10) {
-          hour = `0${hour}`;
+          hour = `0${hour}`
         }
-        hour += ":00";
+        hour += ':00'
       }
 
-      return hour;
+      return hour
     },
     /**
      * Return blocks from a time string (hh:mm)
@@ -604,44 +565,44 @@ export default {
      * @returns {number}
      */
     positionFormat(time) {
-      const split = time.split(":");
-      let hour = parseInt(split[0], 10);
-      let mn = parseInt(split[1], 10);
+      const split = time.split(':')
+      let hour = parseInt(split[0], 10)
+      let mn = parseInt(split[1], 10)
 
       if (this.settings.hour === 12) {
-        const matches = time.match(/([0-1]?[0-9]):?([0-5][0-9])?\s?(am|pm|p)?/);
-        let ind = matches[3];
+        const matches = time.match(/([0-1]?[0-9]):?([0-5][0-9])?\s?(am|pm|p)?/)
+        let ind = matches[3]
         if (!ind) {
-          ind = "am";
+          ind = 'am'
         }
 
-        hour = parseInt(matches[1], 10);
-        mn = parseInt(matches[2], 10);
+        hour = parseInt(matches[1], 10)
+        mn = parseInt(matches[2], 10)
 
         if (!mn) {
-          mn = 0;
+          mn = 0
         }
 
-        if (hour === 12 && ind === "am") {
-          hour = 0;
+        if (hour === 12 && ind === 'am') {
+          hour = 0
         }
-        if (hour === 12 && (ind === "pm" || ind === "p")) {
-          ind = "am";
+        if (hour === 12 && (ind === 'pm' || ind === 'p')) {
+          ind = 'am'
         }
-        if (ind === "pm" || ind === "p") {
-          hour += 12;
+        if (ind === 'pm' || ind === 'p') {
+          hour += 12
         }
       }
 
-      let position = 0;
-      position += hour * this.blocksEachHour;
-      position += (mn / 60) * this.blocksEachHour;
+      let position = 0
+      position += hour * this.blocksEachHour
+      position += (mn / 60) * this.blocksEachHour
 
       // if (Math.floor(position) !== position) {
       // 	return -1
       // }
 
-      return position;
+      return position
     },
     /**
      * Check if a period is valid
@@ -649,125 +610,132 @@ export default {
      * @returns {boolean}
      */
     isValid(current, periods) {
-      const currentStart = this.positionFormat(current.start);
-      const currentEnd = this.positionFormat(current.end);
+      const currentStart = this.positionFormat(current.start)
+      const currentEnd = this.positionFormat(current.end)
 
-      let start = 0;
-      let end = 0;
-      let check = true;
+      let start = 0
+      let end = 0
+      let check = true
 
       for (const p of periods) {
         if (p !== current) {
-          start = this.positionFormat(p.start);
-          end = this.positionFormat(p.end);
+          start = this.positionFormat(p.start)
+          end = this.positionFormat(p.end)
 
           if (start > currentStart && start < currentEnd) {
-            check = false;
+            check = false
           }
 
           if (end > currentStart && end < currentEnd) {
-            check = false;
+            check = false
           }
 
           if (start < currentStart && end > currentEnd) {
-            check = false;
+            check = false
           }
 
           if (start === currentStart || end === currentEnd) {
-            check = false;
+            check = false
           }
 
           if (!check) {
-            break;
+            break
           }
         }
       }
 
-      return check;
+      return check
     },
     addListener(element, event, callback, options) {
       this.events.push({
         element,
         event,
         callback,
-      });
+      })
 
-      element.addEventListener(event, callback, options);
+      element.addEventListener(event, callback, options)
     },
     async editPeriod(day, index, e) {
       if (this.editable) {
-        if (this.$listeners.edit) {
-          this.$emit("edit", { day, index });
+        if (this.$attrs.onEdit) {
+          this.$emit('edit', { day, index })
         } else {
-          e.preventDefault();
-          this.showEditMenu = false;
-          this.x = e.clientX;
-          this.y = e.clientY;
-          const { periods } = this.value[day];
-          this.editEvent = periods[index];
-          await this.$nextTick();
-          this.showEditMenu = true;
+          e.preventDefault()
+          this.showEditMenu = false
+          this.x = e.clientX
+          this.y = e.clientY
+          const { periods } = this.value[day]
+          this.editEvent = periods[index]
+          await this.$nextTick()
+          this.showEditMenu = true
         }
       }
     },
     getY(e, prevent) {
-      let y = null;
+      let y = null
       if (
-        e.type === "touchstart" ||
-        e.type === "touchmove" ||
-        e.type === "touchend" ||
-        e.type === "touchcancel"
+        e.type === 'touchstart' ||
+        e.type === 'touchmove' ||
+        e.type === 'touchend' ||
+        e.type === 'touchcancel'
       ) {
         if (prevent) {
-          e.preventDefault();
+          e.preventDefault()
         }
-        const touch = e.touches[0] || e.changedTouches[0];
-        y = touch.clientY;
+        const touch = e.touches[0] || e.changedTouches[0]
+        y = touch.clientY
       } else if (
-        e.type === "mousedown" ||
-        e.type === "mouseup" ||
-        e.type === "mousemove" ||
-        e.type === "mouseover" ||
-        e.type === "mouseout" ||
-        e.type === "mouseenter" ||
-        e.type === "mouseleave"
+        e.type === 'mousedown' ||
+        e.type === 'mouseup' ||
+        e.type === 'mousemove' ||
+        e.type === 'mouseover' ||
+        e.type === 'mouseout' ||
+        e.type === 'mouseenter' ||
+        e.type === 'mouseleave'
       ) {
-        y = e.clientY;
+        y = e.clientY
       }
 
-      return y;
+      return y
     },
     selectWholeDay(day) {
       if (this.data[day]) {
-        const { periods } = this.data[day];
+        const { periods } = this.data[day]
         if (periods.length > 0) {
-          periods[0].start = "00:00";
-          periods[0].end = "24:00";
-          this.data[day].periods = [periods[0]];
+          periods[0].start = '00:00'
+          periods[0].end = '24:00'
+          this.data[day].periods = [periods[0]]
         } else {
           this.data[day].periods = [
             {
-              start: "00:00",
-              end: "24:00",
+              start: '00:00',
+              end: '24:00',
               title: this.settings.periodTitle,
               backgroundColor: this.settings.periodBackgroundColor,
               borderColor: this.settings.periodBorderColor,
               textColor: this.settings.periodTextColor,
             },
-          ];
+          ]
         }
       }
     },
   },
-};
+}
 </script>
 
 <style>
 .vws {
   position: relative;
   padding: 40px 20px 20px 60px;
-  font-family: system, -apple-system, Roboto, Helvetica Neue, Arial, Helvetica,
-    Geneva, sans-serif;
+  font-family:
+    system,
+    -apple-system,
+    Roboto,
+    Helvetica Neue,
+    Arial,
+    Helvetica,
+    Geneva,
+    sans-serif;
   box-sizing: border-box;
   z-index: 1;
 }
@@ -839,7 +807,7 @@ export default {
   border-bottom: none;
 }
 .vws-grid-line:before {
-  content: "";
+  content: '';
   position: absolute;
   top: 50%;
   height: 1px;
@@ -880,7 +848,7 @@ export default {
   min-height: 10px;
 }
 .vws-period-helper:after {
-  content: "";
+  content: '';
   display: block;
   position: absolute;
   top: 2px;
