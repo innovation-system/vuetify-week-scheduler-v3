@@ -18,7 +18,6 @@
                 :editable="editable"
                 @period-drag="onPeriodDown($event, day.day, p.index)"
                 @period-resize="onPeriodResize($event, day.day, p.index)"
-                @position-change="onPositionChange(day.day, p.index, $event)"
                 @delete="deletePeriod(day.day, p.index)"
                 @clone="clonePeriod(day.day, p.index)"
                 @edit="editPeriod(day.day, p.index, $event)"
@@ -96,10 +95,12 @@
             v-model="editEvent.title"
             label="Title"
             required
+            density="compact"
+            variant="solo-filled"
             :type="settings.inputType"
           ></v-text-field>
         </v-list-item>
-        <v-list-item class="d-flex" style="max-width: 300px">
+        <v-list-item style="max-width: 300px">
           <v-btn
             v-for="c in settings.colors"
             :key="c"
@@ -150,9 +151,9 @@ export default {
   computed: {
     data: {
       get() {
-        let toReturn = this.value
+        let toReturn = this.modelValue
         // validate data object
-        if (this.value.length !== this.settings.days) {
+        if (this.modelValue.length !== this.settings.days) {
           toReturn = []
           for (let i = 0; i < this.settings.days; i++) {
             toReturn.push({
@@ -164,8 +165,8 @@ export default {
         }
         return toReturn
       },
-      set(value) {
-        this.$emit('update:modelValue', value)
+      set(val) {
+        this.$emit('update:modelValue', val)
       },
     },
     daysPeriods() {
@@ -197,7 +198,7 @@ export default {
       return toReturn
     },
     isMobile() {
-      return this.$vuetify.breakpoint.mdAndDown
+      return this.$vuetify.display.mdAndDown
     },
   },
   mounted() {
@@ -664,7 +665,7 @@ export default {
           this.showEditMenu = false
           this.x = e.clientX
           this.y = e.clientY
-          const { periods } = this.value[day]
+          const { periods } = this.modelValue[day]
           this.editEvent = periods[index]
           await this.$nextTick()
           this.showEditMenu = true

@@ -12,14 +12,15 @@
       "require": "./dist/vuetify-week-scheduler-next.umd.cjs"
     }
   },
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --fix",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "release": "read -p 'GITHUB_TOKEN: ' GITHUB_TOKEN && export GITHUB_TOKEN=$GITHUB_TOKEN && release-it"
   },
   "dependencies": {
     "vue": "^3.5.13",
@@ -35,9 +36,33 @@
     "eslint-plugin-vuetify": "^2.5.2",
     "globals": "^16.0.0",
     "prettier": "3.5.3",
+    "release-it": "^19.0.1",
     "unplugin-fonts": "^1.3.1",
     "vite": "^6.2.4",
     "vite-plugin-vue-devtools": "^7.7.2",
     "vite-plugin-vuetify": "^2.1.1"
+  },
+  "release-it": {
+    "github": {
+      "release": true
+    },
+    "git": {
+      "tagName": "v${version}",
+      "requireCleanWorkingDir": false
+    },
+    "hooks": {
+      "before:init": [
+        "npm run build"
+      ]
+    },
+    "npm": {
+      "publish": true
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": "angular",
+        "infile": "CHANGELOG.md"
+      }
+    }
   }
 }

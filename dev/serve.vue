@@ -11,20 +11,25 @@
       </v-btn>
     </v-app-bar>
 
-    <v-container>
-      <v-row class="ml-5 mt-5" justify="start" align="center">
-        <v-checkbox v-model="editable" label="Editable"></v-checkbox>
-        <v-btn class="ml-2" color="warning" @click="events = []"> Clear all </v-btn>
-      </v-row>
-      <v-col class="ml-5 mb-1">
-        <p class="ma-0 text-caption">
-          * Desktop: Right click or double click on an event to edit it
-        </p>
-        <p class="ma-0 text-caption">* Touch devices: Long press on an event to edit it</p>
-      </v-col>
-      <vuetify-week-scheduler v-model="events" :config="config" :editable="editable" />
-    </v-container>
-    <v-footer>
+    <v-main>
+      <v-container>
+        <v-row class="ml-5" justify="start" align="center">
+          <v-checkbox v-model="editable" class="mt-5" label="Editable"></v-checkbox>
+          <v-btn class="ml-2" color="warning" variant="tonal" @click="events = []">
+            Clear all
+          </v-btn>
+        </v-row>
+        <div class="ml-10">
+          <p class="ma-0 text-caption">
+            * Desktop: Right click or double click on an event to edit it
+          </p>
+          <p class="ma-0 text-caption">* Touch devices: Long press on an event to edit it</p>
+        </div>
+        <vuetify-week-scheduler v-model="events" :config="config" :editable="editable" />
+      </v-container>
+    </v-main>
+
+    <v-footer app>
       <v-spacer></v-spacer>
       <div>Innovation System &copy; {{ new Date().getFullYear() }}</div>
       <v-spacer></v-spacer>
