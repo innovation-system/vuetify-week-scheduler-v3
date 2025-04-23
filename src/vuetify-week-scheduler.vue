@@ -43,39 +43,47 @@
     <div class="vws-grid">
       <div class="vws-grid-head">
         <div v-for="n in settings.days" :key="n" class="vws-grid-day">
-          <v-hover v-slot="{ isHovering }">
-            <div>
-              <strong>
-                {{ !isMobile ? settings.daysList[n - 1] : settings.daysList[n - 1].slice(0, 3) }}
-              </strong>
-              <v-btn
-                v-show="editable && isHovering"
-                icon
-                size="x-small"
-                :title="settings.periodRemoveButton"
-                @click="clearDayPeriods(n - 1)"
-              >
-                <v-icon size="x-small">mdi-close</v-icon>
-              </v-btn>
-              <v-btn
-                v-show="editable && isHovering"
-                icon
-                size="x-small"
-                :title="settings.periodDuplicateButton"
-                @click="cloneDayPeriods(n - 1)"
-              >
-                <v-icon size="x-small">mdi-content-copy</v-icon>
-              </v-btn>
-              <v-btn
-                v-show="editable && isHovering"
-                icon
-                size="x-small"
-                :title="settings.periodSelectWholeButton"
-                @click="selectWholeDay(n - 1)"
-              >
-                <v-icon size="x-small">mdi-select-all</v-icon>
-              </v-btn>
-            </div>
+          <v-hover v-slot="{ isHovering, props }">
+            <v-row v-bind="props">
+              <v-col>
+                <strong>
+                  {{ !isMobile ? settings.daysList[n - 1] : settings.daysList[n - 1].slice(0, 3) }}
+                </strong>
+                <v-btn
+                  v-show="editable && isHovering"
+                  class="mx-1 mb-1"
+                  icon="mdi-close"
+                  density="compact"
+                  size="x-small"
+                  variant="plain"
+                  :title="settings.periodRemoveButton"
+                  @click="clearDayPeriods(n - 1)"
+                >
+                </v-btn>
+                <v-btn
+                  v-show="editable && isHovering"
+                  class="mx-1 mb-1"
+                  icon="mdi-content-copy"
+                  density="compact"
+                  size="x-small"
+                  variant="plain"
+                  :title="settings.periodDuplicateButton"
+                  @click="cloneDayPeriods(n - 1)"
+                >
+                </v-btn>
+                <v-btn
+                  v-show="editable && isHovering"
+                  class="mx-1 mb-1"
+                  icon="mdi-select-all"
+                  density="compact"
+                  size="x-small"
+                  variant="plain"
+                  :title="settings.periodSelectWholeButton"
+                  @click="selectWholeDay(n - 1)"
+                >
+                </v-btn>
+              </v-col>
+            </v-row>
           </v-hover>
         </div>
       </div>

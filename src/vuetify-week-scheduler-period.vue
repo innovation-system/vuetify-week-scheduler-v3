@@ -1,5 +1,5 @@
 <template>
-  <v-hover v-slot="{ isHovering }">
+  <v-hover v-slot="{ isHovering, props }">
     <div
       class="vws-period"
       :style="{
@@ -10,6 +10,7 @@
         top: period.top + 'px',
         height: period.height + 'px',
       }"
+      v-bind="props"
       @mousedown.stop="$emit('period-drag', $event)"
       @touchstart.stop="$emit('period-drag', $event)"
       @contextmenu.stop.prevent="$emit('edit', $event)"
@@ -34,24 +35,28 @@
         </div>
         <div v-show="editable && isHovering" class="vws-period-buttons" justify="end">
           <v-btn
-            icon
+            class="mx-1 mb-1"
+            icon="mdi-close"
             size="x-small"
+            density="compact"
+            variant="text"
             :title="settings.periodRemoveButton"
             @click.stop="$emit('delete')"
             @mousedown.stop
             @touchstart.stop
           >
-            <v-icon size="x-small">mdi-close</v-icon>
           </v-btn>
           <v-btn
-            icon
+            class="mx-1 mb-1"
+            icon="mdi-content-copy"
             size="x-small"
+            density="compact"
+            variant="text"
             :title="settings.periodDuplicateButton"
             @click.stop="$emit('clone')"
             @mousedown.stop
             @touchstart.stop
           >
-            <v-icon size="x-small">mdi-content-copy</v-icon>
           </v-btn>
         </div>
         <v-icon
