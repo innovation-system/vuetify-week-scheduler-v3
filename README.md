@@ -14,7 +14,7 @@ Inspired by [jquery-schedule](https://github.com/Yehzuna/jquery-schedule).
 
 ## For Vue 2
 
-See [Vuetify Week Scheduler V2](https://github.com/innovation-system/vuetify-week-scheduler-v3).
+See [Vuetify Week Scheduler V2](https://github.com/innovation-system/vuetify-week-scheduler).
 
 ## Installation
 
