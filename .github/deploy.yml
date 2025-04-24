@@ -1,0 +1,60 @@
+name: deploy
+
+on:
+  push:
+    paths:
+      - "dev/**"
+      - "src/*.vue"
+      - ".github/workflows/deploy.yml"
+    branches:
+      - main
+
+concurrency: 
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    strategy:
+      matrix:
+        node-version: [20.x]    
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm install && npx npm-install-peers
+      
+      - name: Build demo
+        run: npm run build:demo
+
+      - name: Check for changes
+        id: check
+        run: |
+          git diff --name-only || true
+          if ! git diff --quiet ; then
+            echo "Has changes"
+            echo "::set-output name=changed::true"
+          else
+            echo "No changes detected"
+            echo "::set-output name=changed::false"
+          fi
+      - name: Push changes
+        if: ${{ steps.check.outputs.changed == 'true' }}
+        run: |
+          git add .
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git commit -am "docs: update demo"
+          git push
