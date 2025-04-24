@@ -6,6 +6,8 @@ on:
       - "dev/**"
       - "src/*.vue"
       - ".github/workflows/deploy.yml"
+      - "package.json"
+      - "vite.config.js"
     branches:
       - main
 

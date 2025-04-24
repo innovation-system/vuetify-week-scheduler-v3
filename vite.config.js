@@ -7,6 +7,7 @@ import ViteFonts from 'unplugin-fonts/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/vuetify-week-scheduler-v3/', // Set the base URL for the project
   plugins: [
     vue(),
     vueDevTools(),
