@@ -21,13 +21,13 @@ See [Vuetify Week Scheduler V2](https://github.com/innovation-system/vuetify-wee
 ### NPM
 
 ```bash
-npm install vuetify-week-scheduler-3 --save
+npm install @innovation-system/vuetify-week-scheduler-3 --save
 ```
 
 ### Yarn
 
 ```bash
-yarn add vuetify-week-scheduler-v3
+yarn add @innovation-system/vuetify-week-scheduler-v3
 ```
 
 ## Demo
