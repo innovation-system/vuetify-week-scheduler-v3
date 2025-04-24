@@ -21,7 +21,7 @@ See [Vuetify Week Scheduler V2](https://github.com/innovation-system/vuetify-wee
 ### NPM
 
 ```bash
-npm install @innovation-system/vuetify-week-scheduler-3 --save
+npm install @innovation-system/vuetify-week-scheduler-v3 --save
 ```
 
 ### Yarn
