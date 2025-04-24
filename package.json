@@ -8,11 +8,13 @@
   ],
   "main": "./dist/vuetify-week-scheduler-v3.umd.cjs",
   "module": "./dist/vuetify-week-scheduler-v3.js",
+  "style": "./dist/vuetify-week-scheduler-v3.css",
   "exports": {
     ".": {
       "import": "./dist/vuetify-week-scheduler-v3.js",
       "require": "./dist/vuetify-week-scheduler-v3.umd.cjs"
-    }
+    },
+    "./style.css": "./dist/vuetify-week-scheduler-v3.css"
   },
   "repository": {
     "type": "git",
@@ -49,6 +51,11 @@
     "vite": "^6.2.4",
     "vite-plugin-vue-devtools": "^7.7.2",
     "vite-plugin-vuetify": "^2.1.1"
+  },
+  "peerDependencies": {
+    "vue": "^3.0.0",
+    "vuetify": "^3.0.0",
+    "@mdi/font": "^5.0.0 || ^6.0.0 || ^7.0.0"
   },
   "release-it": {
     "github": {

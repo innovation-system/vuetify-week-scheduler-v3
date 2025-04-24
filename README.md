@@ -38,21 +38,27 @@ Demo source code is [here](/dev/)
 
 ## Usage
 
-Import component
+Import component and its styles
 
 ```javascript
-import VueWeekScheduler from 'vuetify-week-scheduler-v3'
+import VueWeekScheduler from 'vuetify-week-scheduler-v3
+import 'vuetify-week-scheduler-v3/style.css'
 ```
 
-And add to parent component
+Register the component in `main.js`
 
 ```javascript
-export default {
-  components: {
-    VueWeekScheduler,
-  },
-  // ... data, methods, mounted (), etc.
-}
+// ... const app = createApp(App)
+app.component('VuetifyWeekScheduler', VuetifyWeekScheduler)
+// ... app.mount('#app')
+```
+
+Or directly in parent component
+
+```javascript
+// ... <script setup>
+import VuetifyWeekScheduler from 'vuetify-week-scheduler-v3'
+// ... </script>
 ```
 
 ## Props
