@@ -1,10 +1,17 @@
 {
-  "name": "vuetify-week-scheduler-v3",
-  "version": "0.0.2",
+  "name": "@innovation-system/vuetify-week-scheduler-v3",
+  "version": "0.1.2",
   "description": "Vuetify week scheduler for Vue 3",
   "type": "module",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
-    "dist"
+    "dist/",
+    "src/",
+    "README.md",
+    "LICENSE"
   ],
   "main": "./dist/vuetify-week-scheduler-v3.umd.cjs",
   "module": "./dist/vuetify-week-scheduler-v3.js",
@@ -18,7 +25,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/innovation-system/vuetify-week-scheduler-v3"
+    "url": "git+https://github.com/innovation-system/vuetify-week-scheduler-v3.git"
   },
   "bugs": {
     "url": "https://github.com/innovation-system/vuetify-week-scheduler-v3/issues"
@@ -65,7 +72,9 @@
     },
     "git": {
       "tagName": "v${version}",
-      "requireCleanWorkingDir": false
+      "requireBranch": "main",
+      "requireCleanWorkingDir": false,
+      "commitMessage": "chore(release): ${version}"
     },
     "hooks": {
       "before:init": [
@@ -81,5 +90,32 @@
         "infile": "CHANGELOG.md"
       }
     }
-  }
+  },
+  "keywords": [
+    "vue",
+    "vuetify",
+    "vuetify-week-scheduler",
+    "scheduler",
+    "week"
+  ],
+  "author": {
+    "name": "Innovation-System",
+    "email": "daniel@innovation-system.it",
+    "url": "http://innovation-system.it"
+  },
+  "contributors": [
+    {
+      "name": "Mattia Thiella",
+      "email": "reekoz@gmail.com"
+    },
+    {
+      "name": "Daniel Lando",
+      "email": "daniel.sorridi@gmail.com"
+    }
+  ],
+  "engines": {
+    "node": ">= 18"
+  },
+  "homepage": "https://github.com/innovation-system/vuetify-week-scheduler-v3/",
+  "license": "MIT"
 }
