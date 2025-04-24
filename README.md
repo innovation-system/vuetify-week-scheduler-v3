@@ -41,8 +41,8 @@ Demo source code is [here](/dev/)
 Import component and its styles
 
 ```javascript
-import VueWeekScheduler from 'vuetify-week-scheduler-v3
-import 'vuetify-week-scheduler-v3/style.css'
+import VueWeekScheduler from '@innovation-system/vuetify-week-scheduler-v3'
+import '@innovation-system/vuetify-week-scheduler-v3/style.css'
 ```
 
 Register the component in `main.js`
@@ -57,7 +57,8 @@ Or directly in parent component
 
 ```javascript
 // ... <script setup>
-import VuetifyWeekScheduler from 'vuetify-week-scheduler-v3'
+import VuetifyWeekScheduler from '@innovation-system/vuetify-week-scheduler-v3'
+import '@innovation-system/vuetify-week-scheduler-v3/style.css'
 // ... </script>
 ```
 
