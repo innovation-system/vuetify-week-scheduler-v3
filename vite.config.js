@@ -37,9 +37,9 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'lib/main.js'),
-      name: 'VuetifyWeekSchedulerNext',
+      name: 'VuetifyWeekSchedulerV3',
       // the proper extensions will be added
-      fileName: 'vuetify-week-scheduler-next',
+      fileName: 'vuetify-week-scheduler-v3',
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled

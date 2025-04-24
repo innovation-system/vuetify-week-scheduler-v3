@@ -57,7 +57,7 @@ export default {
   }),
   methods: {
     openGithub() {
-      window.open('https://github.com/innovation-system/vuetify-week-scheduler', '_blank')
+      window.open('https://github.com/innovation-system/vuetify-week-scheduler-v3', '_blank')
     },
   },
 }

@@ -1,19 +1,26 @@
 {
-  "name": "vuetify-week-scheduler-next",
+  "name": "vuetify-week-scheduler-v3",
+  "version": "0.0.1",
+  "private": true,
   "type": "module",
   "files": [
     "dist"
   ],
-  "main": "./dist/vuetify-week-scheduler-next.umd.cjs",
-  "module": "./dist/vuetify-week-scheduler-next.js",
+  "main": "./dist/vuetify-week-scheduler-v3.umd.cjs",
+  "module": "./dist/vuetify-week-scheduler-v3.js",
   "exports": {
     ".": {
-      "import": "./dist/vuetify-week-scheduler-next.js",
-      "require": "./dist/vuetify-week-scheduler-next.umd.cjs"
+      "import": "./dist/vuetify-week-scheduler-v3.js",
+      "require": "./dist/vuetify-week-scheduler-v3.umd.cjs"
     }
   },
-  "version": "0.0.1",
-  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/innovation-system/vuetify-week-scheduler-v3"
+  },
+  "bugs": {
+    "url": "https://github.com/innovation-system/vuetify-week-scheduler-v3/issues"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
