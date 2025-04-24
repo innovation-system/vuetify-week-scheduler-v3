@@ -1,5 +1,7 @@
 # Changelog
 
+## [0.1.3](https://github.com/innovation-system/vuetify-week-scheduler-v3/compare/v0.0.2...v0.1.3) (2025-04-24)
+
 ## 0.0.2 (2025-04-24)
 
 
