@@ -1,12 +1,12 @@
 # Vuetify Week scheduler V3
 
-![GitHub package.json version](https://img.shields.io/github/package-json/v/innovation-system/vuetify-week-scheduler)
-[![ci](https://github.com/innovation-system/vuetify-week-scheduler/actions/workflows/ci.yml/badge.svg)](https://github.com/innovation-system/vuetify-week-scheduler/actions/workflows/ci.yml)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/innovation-system/vuetify-week-scheduler-v3)
+[![ci](https://github.com/innovation-system/vuetify-week-scheduler-v3/actions/workflows/ci.yml/badge.svg)](https://github.com/innovation-system/vuetify-week-scheduler-v3/actions/workflows/ci.yml)
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.png)](https://opensource.org/licenses/mit-license.php)
 
-[![NPM Downloads](https://img.shields.io/npm/dm/vuetify-week-scheduler.svg?style=flat)](https://www.npmjs.com/package/vuetify-week-scheduler)
+[![NPM Downloads](https://img.shields.io/npm/dm/vuetify-week-scheduler-v3.svg?style=flat)](https://www.npmjs.com/package/vuetify-week-scheduler-v3)
 
 > A simple component to manage weekly events
 
@@ -14,7 +14,7 @@ Inspired by [jquery-schedule](https://github.com/Yehzuna/jquery-schedule).
 
 ## For Vue 2
 
-See [Vuetify Week Scheduler V2](https://github.com/innovation-system/vuetify-week-scheduler).
+See [Vuetify Week Scheduler V2](https://github.com/innovation-system/vuetify-week-scheduler-v3).
 
 ## Installation
 
