@@ -1,6 +1,6 @@
 {
   "name": "vuetify-week-scheduler-v3",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "type": "module",
   "files": [
@@ -33,12 +33,13 @@
     "release": "read -p 'GITHUB_TOKEN: ' GITHUB_TOKEN && export GITHUB_TOKEN=$GITHUB_TOKEN && release-it"
   },
   "dependencies": {
-    "vue": "^3.5.13",
-    "vuetify": "^3.8.2"
+    "vue": "^3.0.0",
+    "vuetify": "^3.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
     "@mdi/font": "^7.4.47",
+    "@release-it/conventional-changelog": "^10.0.1",
     "@vitejs/plugin-vue": "^5.2.3",
     "@vue/eslint-config-prettier": "^10.2.0",
     "eslint": "^9.22.0",
