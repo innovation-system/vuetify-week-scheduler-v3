@@ -1,6 +1,7 @@
 <template>
   <v-hover v-slot="{ isHovering, props }">
     <div
+      ref="root"
       class="vws-period"
       :style="{
         backgroundColor: options.backgroundColor,
@@ -21,8 +22,8 @@
           v-show="editable && isHovering"
           size="small"
           class="vws-handle"
-          @mousedown.stop="$emit('period-resize', { $event, isUp: true, $el })"
-          @touchstart.stop="$emit('period-resize', { $event, isUp: true, $el })"
+          @mousedown.stop="onPeriodResize($event, true)"
+          @touchstart.stop="onPeriodResize($event, true)"
         >
           mdi-chevron-up
         </v-icon>
@@ -64,8 +65,8 @@
           size="small"
           class="vws-handle"
           style="bottom: 0"
-          @mousedown.stop="$emit('period-resize', { $event, isUp: false, $el })"
-          @touchstart.stop="$emit('period-resize', { $event, isUp: false, $el })"
+          @mousedown.stop="onPeriodResize($event, false)"
+          @touchstart.stop="onPeriodResize($event, false)"
         >
           mdi-chevron-down
         </v-icon>
@@ -75,6 +76,8 @@
 </template>
 
 <script>
+import { ref } from 'vue'
+
 export default {
   name: 'VuetifyWeekSchedulerPeriod',
   props: {
@@ -89,12 +92,26 @@ export default {
     editable: { type: Boolean, default: false },
   },
   emits: ['edit', 'delete', 'clone', 'period-drag', 'period-resize'],
+  setup() {
+    // this is needed to get the correct HTML element reference
+    const root = ref(null)
+    return { root }
+  },
   computed: {
     options() {
       return this.period.options
     },
     shortPeriod() {
       return this.period.height <= 30
+    },
+  },
+  methods: {
+    onPeriodResize(e, isUp) {
+      this.$emit('period-resize', {
+        $event: e,
+        isUp,
+        $el: this.root,
+      })
     },
   },
 }
