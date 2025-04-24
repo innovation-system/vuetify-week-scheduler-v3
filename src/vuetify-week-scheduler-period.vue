@@ -36,7 +36,7 @@
         </div>
         <div v-show="editable && isHovering" class="vws-period-buttons" justify="end">
           <v-btn
-            class="mx-1 mb-1"
+            class="mx-1 mt-1"
             icon="mdi-close"
             size="x-small"
             density="compact"
@@ -48,7 +48,7 @@
           >
           </v-btn>
           <v-btn
-            class="mx-1 mb-1"
+            class="mx-1 mt-1"
             icon="mdi-content-copy"
             size="x-small"
             density="compact"
