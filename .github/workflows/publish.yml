@@ -1,0 +1,49 @@
+name: ci
+
+on:
+  release:
+    types: [published]
+
+  workflow_dispatch:
+
+concurrency: 
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x, 22.x]    
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm install && npx npm-install-peers
+    
+      - name: Build
+        run: npm run build
+      
+      - name: Set NPM config
+        run: |
+          npm config set @innovation-system:registry https://npm.pkg.github.com/
+          npm config set //npm.pkg.github.com/:_authToken ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish
+        run: |
+          npm publish --access public --registry https://npm.pkg.github.com/
