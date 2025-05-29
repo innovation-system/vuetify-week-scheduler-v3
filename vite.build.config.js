@@ -26,12 +26,7 @@ export default defineConfig({
           vue: 'Vue',
           vuetify: 'Vuetify',
         },
-        assetFileNames: (assetInfo) => {
-          if (assetInfo.name === 'style.css') {
-            return 'vuetify-week-scheduler-v3.css'
-          }
-          return assetInfo.name
-        },
+        assetFileNames: (assetInfo) => assetInfo.names[0],
       },
     },
     cssCodeSplit: false, // This keeps CSS together with components

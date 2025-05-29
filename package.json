@@ -15,13 +15,11 @@
   ],
   "main": "./dist/vuetify-week-scheduler-v3.umd.cjs",
   "module": "./dist/vuetify-week-scheduler-v3.js",
-  "style": "./dist/vuetify-week-scheduler-v3.css",
   "exports": {
     ".": {
       "import": "./dist/vuetify-week-scheduler-v3.js",
       "require": "./dist/vuetify-week-scheduler-v3.umd.cjs"
-    },
-    "./style.css": "./dist/vuetify-week-scheduler-v3.css"
+    }
   },
   "repository": {
     "type": "git",
