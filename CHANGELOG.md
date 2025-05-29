@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.5](https://github.com/innovation-system/vuetify-week-scheduler-v3/compare/v0.1.4...v0.1.5) (2025-05-29)
+
+
+### Bug Fixes
+
+* remove any reference to CSS ([2bce9f9](https://github.com/innovation-system/vuetify-week-scheduler-v3/commit/2bce9f9c5ebd9a95845c6074dfa9fc055a73c65f))
+* remove empty CSS ([970dfe4](https://github.com/innovation-system/vuetify-week-scheduler-v3/commit/970dfe44198500fee26ea3f1b975902154d3184b))
+
 ## [0.1.4](https://github.com/innovation-system/vuetify-week-scheduler-v3/compare/v0.1.3...v0.1.4) (2025-04-30)
 
 ## [0.1.3](https://github.com/innovation-system/vuetify-week-scheduler-v3/compare/v0.0.2...v0.1.3) (2025-04-24)
