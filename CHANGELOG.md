@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.6](https://github.com/innovation-system/vuetify-week-scheduler-v3/compare/v0.1.5...v0.1.6) (2025-06-19)
+
+
+### Bug Fixes
+
+* bundler friendly css ([51fe75a](https://github.com/innovation-system/vuetify-week-scheduler-v3/commit/51fe75aea7b54d9b1cd987964b63fd9186eedc0f))
+
 ## [0.1.5](https://github.com/innovation-system/vuetify-week-scheduler-v3/compare/v0.1.4...v0.1.5) (2025-05-29)
 
 
