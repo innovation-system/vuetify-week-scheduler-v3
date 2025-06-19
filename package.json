@@ -13,13 +13,12 @@
     "README.md",
     "LICENSE"
   ],
-  "main": "./dist/vuetify-week-scheduler-v3.umd.cjs",
+  "main": "./dist/vuetify-week-scheduler-v3.js",
   "module": "./dist/vuetify-week-scheduler-v3.js",
+  "style": "./dist/vuetify-week-scheduler-v3.css",
   "exports": {
-    ".": {
-      "import": "./dist/vuetify-week-scheduler-v3.js",
-      "require": "./dist/vuetify-week-scheduler-v3.umd.cjs"
-    }
+    ".": "./dist/vuetify-week-scheduler-v3.js",
+    "./style.css": "./dist/vuetify-week-scheduler-v3.css"
   },
   "repository": {
     "type": "git",
