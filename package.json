@@ -63,31 +63,6 @@
     "vue": "^3.0.0",
     "vuetify": "^3.0.0"
   },
-  "release-it": {
-    "github": {
-      "release": true
-    },
-    "git": {
-      "tagName": "v${version}",
-      "requireBranch": "main",
-      "requireCleanWorkingDir": false,
-      "commitMessage": "chore(release): ${version}"
-    },
-    "hooks": {
-      "before:init": [
-        "npm run build"
-      ]
-    },
-    "npm": {
-      "publish": true
-    },
-    "plugins": {
-      "@release-it/conventional-changelog": {
-        "preset": "angular",
-        "infile": "CHANGELOG.md"
-      }
-    }
-  },
   "keywords": [
     "vue",
     "vuetify",
