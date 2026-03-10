@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.7](https://github.com/innovation-system/vuetify-week-scheduler-v3/compare/v0.1.6...v0.1.7) (2026-03-10)
+
+
+### Bug Fixes
+
+* remove MDI font import to prevent bundle bloat ([8eb388a](https://github.com/innovation-system/vuetify-week-scheduler-v3/commit/8eb388aacecc43eaa6158e34a5c88c623ebe82ef))
+* remove vue and vuetify from dependencies (keep only in peerDependencies) ([45ea3a5](https://github.com/innovation-system/vuetify-week-scheduler-v3/commit/45ea3a5b055e59fd08aa243c9e6e06339a1416c2))
+* update package lock ([ef5da43](https://github.com/innovation-system/vuetify-week-scheduler-v3/commit/ef5da4302b97a639d480f1e157d692e495b70173))
+
 ## [0.1.6](https://github.com/innovation-system/vuetify-week-scheduler-v3/compare/v0.1.5...v0.1.6) (2025-06-19)
 
 
