@@ -1,6 +1,7 @@
 import Serve from './serve.vue'
 import vuetify from '../src/plugins/vuetify'
 import 'vuetify/dist/vuetify.min.css'
+import '@mdi/font/css/materialdesignicons.css'
 import { createApp } from 'vue'
 
 function registerPlugins(app) {

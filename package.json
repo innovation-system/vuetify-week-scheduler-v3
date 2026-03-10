@@ -36,10 +36,6 @@
     "format": "prettier --write src/",
     "release": "read -p 'GITHUB_TOKEN: ' GITHUB_TOKEN && export GITHUB_TOKEN=$GITHUB_TOKEN && release-it"
   },
-  "dependencies": {
-    "vue": "^3.0.0",
-    "vuetify": "^3.0.0"
-  },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
     "@mdi/font": "^7.4.47",
