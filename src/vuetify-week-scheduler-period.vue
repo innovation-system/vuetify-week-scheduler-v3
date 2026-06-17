@@ -130,6 +130,11 @@ export default {
       this.$emit('period-drag', e)
     },
     onPeriodTouchStart(e) {
+      if (this.isInteractiveTouchTarget(e)) {
+        this.clearLongPress()
+        return
+      }
+
       this.$emit('show-controls')
       this.clearLongPress()
 
@@ -152,7 +157,6 @@ export default {
         }, this.longPressDelay)
       }
 
-      e.preventDefault()
       this.$emit('period-drag', e)
     },
     onPeriodTouchMove(e) {
@@ -184,6 +188,13 @@ export default {
     },
     getTouch(e) {
       return e.touches?.[0] || e.changedTouches?.[0]
+    },
+    isInteractiveTouchTarget(e) {
+      return Boolean(
+        e.target?.closest?.(
+          '.vws-period-buttons, .vws-handle, button, a, input, textarea, select, [role="button"]',
+        ),
+      )
     },
     createTouchEditEvent(originalEvent, position) {
       return {
