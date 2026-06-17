@@ -12,14 +12,17 @@
         height: period.height + 'px',
       }"
       v-bind="props"
-      @mousedown.stop="$emit('period-drag', $event)"
-      @touchstart.stop="$emit('period-drag', $event)"
-      @contextmenu.stop.prevent="$emit('edit', $event)"
-      @dblclick.stop.prevent="$emit('edit', $event)"
+      @mousedown.stop="onPeriodDown"
+      @touchstart.stop="onPeriodTouchStart"
+      @touchmove="onPeriodTouchMove"
+      @touchend="clearLongPress"
+      @touchcancel="clearLongPress"
+      @contextmenu.stop.prevent="onEdit"
+      @dblclick.stop.prevent="onEdit"
     >
       <div class="vws-period-container">
         <v-icon
-          v-show="editable && isHovering"
+          v-show="showControls(isHovering)"
           size="small"
           class="vws-handle"
           @mousedown.stop="onPeriodResize($event, true)"
@@ -34,7 +37,7 @@
         <div v-show="!shortPeriod" class="vws-period-title text-truncate">
           {{ options.title }}
         </div>
-        <div v-show="editable && isHovering" class="vws-period-buttons" justify="end">
+        <div v-show="showControls(isHovering)" class="vws-period-buttons" justify="end">
           <v-btn
             class="mx-1 mt-1"
             icon="mdi-close"
@@ -61,7 +64,7 @@
           </v-btn>
         </div>
         <v-icon
-          v-show="editable && isHovering"
+          v-show="showControls(isHovering)"
           size="small"
           class="vws-handle"
           style="bottom: 0"
@@ -90,12 +93,22 @@ export default {
       default: () => ({}),
     },
     editable: { type: Boolean, default: false },
+    controlsVisible: { type: Boolean, default: false },
   },
-  emits: ['edit', 'delete', 'clone', 'period-drag', 'period-resize'],
+  emits: ['edit', 'delete', 'clone', 'period-drag', 'period-resize', 'show-controls'],
   setup() {
     // this is needed to get the correct HTML element reference
     const root = ref(null)
     return { root }
+  },
+  data() {
+    return {
+      longPressTimer: null,
+      longPressStart: null,
+      longPressDelay: 500,
+      longPressMoveThreshold: 8,
+      supportsHover: false,
+    }
   },
   computed: {
     options() {
@@ -105,7 +118,86 @@ export default {
       return this.period.height <= 30
     },
   },
+  mounted() {
+    this.supportsHover = window.matchMedia?.('(hover: hover) and (pointer: fine)').matches ?? true
+  },
+  beforeUnmount() {
+    this.clearLongPress()
+  },
   methods: {
+    onPeriodDown(e) {
+      this.clearLongPress()
+      this.$emit('period-drag', e)
+    },
+    onPeriodTouchStart(e) {
+      this.$emit('show-controls')
+      this.clearLongPress()
+
+      const touch = this.getTouch(e)
+      if (touch) {
+        this.longPressStart = {
+          x: touch.clientX,
+          y: touch.clientY,
+        }
+
+        this.longPressTimer = setTimeout(() => {
+          const start = this.longPressStart
+          this.longPressTimer = null
+          this.longPressStart = null
+
+          if (start) {
+            e.preventDefault()
+            this.$emit('edit', this.createTouchEditEvent(e, start))
+          }
+        }, this.longPressDelay)
+      }
+
+      e.preventDefault()
+      this.$emit('period-drag', e)
+    },
+    onPeriodTouchMove(e) {
+      if (!this.longPressTimer || !this.longPressStart) return
+
+      const touch = this.getTouch(e)
+      if (!touch) {
+        this.clearLongPress()
+        return
+      }
+
+      const dx = Math.abs(touch.clientX - this.longPressStart.x)
+      const dy = Math.abs(touch.clientY - this.longPressStart.y)
+
+      if (dx > this.longPressMoveThreshold || dy > this.longPressMoveThreshold) {
+        this.clearLongPress()
+      }
+    },
+    clearLongPress() {
+      if (this.longPressTimer) {
+        clearTimeout(this.longPressTimer)
+        this.longPressTimer = null
+      }
+      this.longPressStart = null
+    },
+    onEdit(e) {
+      this.clearLongPress()
+      this.$emit('edit', e)
+    },
+    getTouch(e) {
+      return e.touches?.[0] || e.changedTouches?.[0]
+    },
+    createTouchEditEvent(originalEvent, position) {
+      return {
+        type: 'longpress',
+        clientX: position.x,
+        clientY: position.y,
+        originalEvent,
+        preventDefault: () => originalEvent.preventDefault(),
+        stopPropagation: () => originalEvent.stopPropagation(),
+      }
+    },
+    showControls(isHovering) {
+      return this.editable && (this.controlsVisible || (this.supportsHover && isHovering))
+    },
     onPeriodResize(e, isUp) {
       this.$emit('period-resize', {
         $event: e,
