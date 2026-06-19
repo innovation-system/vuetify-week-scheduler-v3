@@ -250,7 +250,6 @@ export default {
     /** When clicking on a day */
     onDayDown(day, e) {
       if (!this.editable) return
-      if (this.closeEditMenuIfOpen(e)) return
 
       this.clearPeriodControls()
 
@@ -384,7 +383,6 @@ export default {
     },
     onPeriodDown(e, day, index) {
       if (this.editable) {
-        if (this.closeEditMenuIfOpen(e)) return
         const el = e.currentTarget
         this.draggingPeriod = {
           el,
@@ -398,7 +396,6 @@ export default {
     onPeriodResize(event, day, index) {
       if (this.editable) {
         const { $event: e, isUp, $el } = event
-        if (this.closeEditMenuIfOpen(e)) return
 
         this.resizingPeriod = {
           el: $el,
@@ -697,14 +694,6 @@ export default {
       this.resizingPeriod = null
       this.clearPeriodControls()
     },
-    closeEditMenuIfOpen(e) {
-      if (!this.showEditMenu) return false
-
-      e?.preventDefault?.()
-      e?.stopPropagation?.()
-      this.closeEditMenu()
-      return true
-    },
     async editPeriod(day, index, e) {
       if (this.editable) {
         this.draggingPeriod = null
@@ -726,7 +715,7 @@ export default {
       }
     },
     getClientPosition(e) {
-      const touch = e?.touches?.[0] || e?.changedTouches?.[0]
+      const touch = this.getTouchPoint(e)
       if (touch) {
         return { x: touch.clientX, y: touch.clientY }
       }
@@ -735,6 +724,9 @@ export default {
         x: e?.clientX ?? 0,
         y: e?.clientY ?? 0,
       }
+    },
+    getTouchPoint(e) {
+      return e?.touches?.[0] || e?.changedTouches?.[0] || null
     },
     getY(e, prevent) {
       let y = null
@@ -747,7 +739,7 @@ export default {
         if (prevent) {
           e.preventDefault()
         }
-        const touch = e.touches[0] || e.changedTouches[0]
+        const touch = this.getTouchPoint(e)
         y = touch.clientY
       } else if (
         e.type === 'mousedown' ||

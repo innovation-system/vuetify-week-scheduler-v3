@@ -151,7 +151,6 @@ export default {
           this.longPressStart = null
 
           if (start) {
-            e.preventDefault()
             this.$emit('edit', this.createTouchEditEvent(e, start))
           }
         }, this.longPressDelay)
@@ -190,6 +189,7 @@ export default {
       return e.touches?.[0] || e.changedTouches?.[0]
     },
     isInteractiveTouchTarget(e) {
+      // Child controls already stop touchstart; keep this as a defensive backstop.
       return Boolean(
         e.target?.closest?.(
           '.vws-period-buttons, .vws-handle, button, a, input, textarea, select, [role="button"]',
@@ -202,8 +202,6 @@ export default {
         clientX: position.x,
         clientY: position.y,
         originalEvent,
-        preventDefault: () => originalEvent.preventDefault(),
-        stopPropagation: () => originalEvent.stopPropagation(),
       }
     },
     showControls(isHovering) {
