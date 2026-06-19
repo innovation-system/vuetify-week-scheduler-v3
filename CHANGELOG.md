@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.8](https://github.com/innovation-system/vuetify-week-scheduler-v3/compare/v0.1.7...v0.1.8) (2026-06-19)
+
+
+### Bug Fixes
+
+* improve touch period editing ([#5](https://github.com/innovation-system/vuetify-week-scheduler-v3/issues/5)) ([590b911](https://github.com/innovation-system/vuetify-week-scheduler-v3/commit/590b911e65bd325a43a8030fdf64afbc142dd787))
+
 ## [0.1.7](https://github.com/innovation-system/vuetify-week-scheduler-v3/compare/v0.1.6...v0.1.7) (2026-03-10)
 
 
