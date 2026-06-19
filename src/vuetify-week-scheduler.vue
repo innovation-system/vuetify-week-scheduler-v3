@@ -16,6 +16,8 @@
                 :period="p"
                 :settings="settings"
                 :editable="editable"
+                :controls-visible="isPeriodControlsVisible(day.day, p.index)"
+                @show-controls="showPeriodControls(day.day, p.index)"
                 @period-drag="onPeriodDown($event, day.day, p.index)"
                 @period-resize="onPeriodResize($event, day.day, p.index)"
                 @delete="deletePeriod(day.day, p.index)"
@@ -40,6 +42,13 @@
         </tr>
       </tbody>
     </table>
+    <div
+      v-if="showEditMenu"
+      class="vws-edit-click-blocker"
+      @mousedown.stop.prevent="closeEditMenu"
+      @touchstart.stop.prevent="closeEditMenu"
+      @click.stop.prevent="closeEditMenu"
+    ></div>
     <div class="vws-grid">
       <div class="vws-grid-head">
         <div v-for="n in settings.days" :key="n" class="vws-grid-day">
@@ -150,6 +159,7 @@ export default {
       newPeriod: null,
       draggingPeriod: null,
       resizingPeriod: null,
+      activeControlsPeriod: null,
       showEditMenu: false,
       x: 0,
       y: 0,
@@ -241,6 +251,8 @@ export default {
     onDayDown(day, e) {
       if (!this.editable) return
 
+      this.clearPeriodControls()
+
       const rect = e.currentTarget.getBoundingClientRect()
       const offset = this.getY(e, true) - rect.top
 
@@ -272,6 +284,15 @@ export default {
         textColor: this.settings.periodTextColor,
         ...period,
       }
+    },
+    showPeriodControls(day, index) {
+      this.activeControlsPeriod = { day, index }
+    },
+    clearPeriodControls() {
+      this.activeControlsPeriod = null
+    },
+    isPeriodControlsVisible(day, index) {
+      return this.activeControlsPeriod?.day === day && this.activeControlsPeriod?.index === index
     },
     handleEvents() {
       const onUp = () => {
@@ -428,9 +449,11 @@ export default {
       }
     },
     deletePeriod(day, index) {
+      this.clearPeriodControls()
       this.data[day].periods.splice(index, 1)
     },
     clonePeriod(day, indexOrPeriod) {
+      this.clearPeriodControls()
       const period =
         typeof indexOrPeriod === 'object' ? indexOrPeriod : this.data[day].periods[indexOrPeriod]
       for (const d of this.data) {
@@ -664,21 +687,46 @@ export default {
 
       element.addEventListener(event, callback, options)
     },
+    closeEditMenu() {
+      this.showEditMenu = false
+      this.newPeriod = null
+      this.draggingPeriod = null
+      this.resizingPeriod = null
+      this.clearPeriodControls()
+    },
     async editPeriod(day, index, e) {
       if (this.editable) {
+        this.draggingPeriod = null
+        this.clearPeriodControls()
+
         if (this.$attrs.onEdit) {
           this.$emit('edit', { day, index })
         } else {
-          e.preventDefault()
+          e?.preventDefault?.()
+          const { x, y } = this.getClientPosition(e)
           this.showEditMenu = false
-          this.x = e.clientX
-          this.y = e.clientY
+          this.x = x
+          this.y = y
           const { periods } = this.modelValue[day]
           this.editEvent = periods[index]
           await this.$nextTick()
           this.showEditMenu = true
         }
       }
+    },
+    getClientPosition(e) {
+      const touch = this.getTouchPoint(e)
+      if (touch) {
+        return { x: touch.clientX, y: touch.clientY }
+      }
+
+      return {
+        x: e?.clientX ?? 0,
+        y: e?.clientY ?? 0,
+      }
+    },
+    getTouchPoint(e) {
+      return e?.touches?.[0] || e?.changedTouches?.[0] || null
     },
     getY(e, prevent) {
       let y = null
@@ -691,7 +739,7 @@ export default {
         if (prevent) {
           e.preventDefault()
         }
-        const touch = e.touches[0] || e.changedTouches[0]
+        const touch = this.getTouchPoint(e)
         y = touch.clientY
       } else if (
         e.type === 'mousedown' ||
@@ -776,6 +824,11 @@ export default {
   width: 14.28571%;
   border-left: 1px solid #ccc;
   border-right: 1px solid #ccc;
+}
+.vws-edit-click-blocker {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
 }
 .vws-grid {
   position: absolute;
@@ -893,6 +946,7 @@ export default {
   cursor: pointer;
   border-radius: 5px;
   touch-action: none;
+  -webkit-touch-callout: none;
   outline: 1px solid #ccc;
 }
 
